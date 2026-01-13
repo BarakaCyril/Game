@@ -9,9 +9,9 @@ func shoot(vector: Vector2):
 
 	p.global_position = $muzzle.global_position
 	p.global_transform = $muzzle.global_transform
-	p.speed = vector.length() + 700
+	p.speed = vector.length() * 8
 	if vector.length() < 100:
-		p.speed = vector.length() + 400
+		p.speed = vector.length() * 8
 	print(p.speed)
 
 

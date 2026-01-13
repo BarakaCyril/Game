@@ -1,17 +1,41 @@
-[gd_scene load_steps=4 format=3 uid="uid://coar0w52ewb50"]
+[gd_scene load_steps=6 format=3 uid="uid://coar0w52ewb50"]
 
-[ext_resource type="PackedScene" uid="uid://sp56lm7sjeyv" path="res://scenes/stone.tscn" id="1_rwgxs"]
+[ext_resource type="Script" uid="uid://3a4xl42l8pj3" path="res://scenes/world.gd" id="1_k0juu"]
+[ext_resource type="PackedScene" uid="uid://sp56lm7sjeyv" path="res://scripts/stone.tscn" id="1_rwgxs"]
+[ext_resource type="PackedScene" uid="uid://cohiqpndtgam" path="res://scenes/enemy.tscn" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b2ylklc67ii0v" path="res://scenes/launch_area.tscn" id="2_rwgxs"]
 [ext_resource type="PackedScene" uid="uid://be8qbmt0fe144" path="res://scenes/player.tscn" id="3_4wyf3"]
 
 [node name="WORLD" type="Node2D"]
+script = ExtResource("1_k0juu")
+enemy_scene = ExtResource("2_71j4m")
 
 [node name="launchArea" parent="." node_paths=PackedStringArray("player_node") instance=ExtResource("2_rwgxs")]
-position = Vector2(564, 488)
+position = Vector2(366, 1161)
 player_node = NodePath("../player")
 
-[node name="player" parent="." instance=ExtResource("3_4wyf3")]
-position = Vector2(558, 483)
+[node name="player" parent="." groups=["Player"] instance=ExtResource("3_4wyf3")]
+position = Vector2(363, 1102)
 projectile = ExtResource("1_rwgxs")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="spawn_points" type="Node2D" parent="."]
+
+[node name="point1" type="Marker2D" parent="spawn_points"]
+position = Vector2(336, -166)
+
+[node name="point2" type="Marker2D" parent="spawn_points"]
+position = Vector2(-40, 270)
+
+[node name="point3" type="Marker2D" parent="spawn_points"]
+position = Vector2(56, -51)
+
+[node name="point4" type="Marker2D" parent="spawn_points"]
+position = Vector2(769, 130)
+
+[node name="point5" type="Marker2D" parent="spawn_points"]
+position = Vector2(608, -68)
 
 [connection signal="vector_created" from="launchArea" to="player" method="_on_launch_area_vector_created"]
