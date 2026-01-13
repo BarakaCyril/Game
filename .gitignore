@@ -1,12 +1,3 @@
-raylib-master
-_build
-_bin
-.vs
-/bin
-/build
-Makefile
-obj
-*.vcxproj
-*.filters
-*.user
-/*.sln
+# Godot 4+ specific ignores
+.godot/
+/android/

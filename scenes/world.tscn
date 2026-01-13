@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://coar0w52ewb50"]
+
+[ext_resource type="PackedScene" uid="uid://sp56lm7sjeyv" path="res://scenes/stone.tscn" id="1_rwgxs"]
+[ext_resource type="PackedScene" uid="uid://b2ylklc67ii0v" path="res://scenes/launch_area.tscn" id="2_rwgxs"]
+[ext_resource type="PackedScene" uid="uid://be8qbmt0fe144" path="res://scenes/player.tscn" id="3_4wyf3"]
+
+[node name="WORLD" type="Node2D"]
+
+[node name="launchArea" parent="." node_paths=PackedStringArray("player_node") instance=ExtResource("2_rwgxs")]
+position = Vector2(564, 488)
+player_node = NodePath("../player")
+
+[node name="player" parent="." instance=ExtResource("3_4wyf3")]
+position = Vector2(558, 483)
+projectile = ExtResource("1_rwgxs")
+
+[connection signal="vector_created" from="launchArea" to="player" method="_on_launch_area_vector_created"]
