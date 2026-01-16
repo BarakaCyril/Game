@@ -201,3 +201,13 @@ animation = &"walk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-9, 11)
 shape = SubResource("CircleShape2D_thsr5")
+
+[node name="health_bar" type="ProgressBar" parent="." groups=["Enemies"]]
+offset_left = -165.0
+offset_top = 83.0
+offset_right = -17.370117
+offset_bottom = 110.0
+rotation = -1.5707964
+value = 100.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
