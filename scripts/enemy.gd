@@ -3,19 +3,19 @@ extends Area2D
 @onready var health_bar :ProgressBar= $health_bar
 
 @onready var target :Node2D
-@export var speed = 500
+@export var speed = 200
 @export var health = 100
 
 func _ready() -> void:
 	health_bar.value = health
-	health_bar.visible = false
 
 func hurt(_damage):
-	health_bar.visible = true
+	health_bar.value = health
 	health -= _damage
 	print("hurt enemy")
 	
 func _physics_process(delta: float) -> void:
+	health_bar.value = health
 	if target:
 		var distance = global_position.distance_to(target.global_position)
 		if distance > 5.0:
