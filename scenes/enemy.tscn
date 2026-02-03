@@ -218,4 +218,6 @@ rotation = -1.5707964
 theme = SubResource("Theme_ya47j")
 value = 100.0
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

@@ -4,54 +4,90 @@ extends CharacterBody2D
 @export var max_length := 200
 @export var speed = 400
 
-var touch_down := false
-var position_start := Vector2.ZERO
-var position_end := Vector2.ZERO
-var launch_vector := Vector2.ZERO
+@onready var animated_sprite :AnimatedSprite2D = $AnimatedSprite2D
+@onready var shoot_cooldown :Timer = $shoot_cooldown
 
-func get_input():
+var can_shoot = true
+
+enum playerState {
+	IDLE,
+	RUN,
+	SHOOT,
+	RUN_AND_SHOOT
+}
+
+var state = playerState.IDLE
+
+func change_state(new_state):
+	if state == new_state:
+		return
+	state = new_state
+	
+	match state:
+		playerState.IDLE:
+			animated_sprite.play("idle")
+		playerState.RUN:
+			animated_sprite.play("run")
+		playerState.SHOOT:
+			animated_sprite.play("shoot")
+			can_shoot = false
+		playerState.RUN_AND_SHOOT:
+			animated_sprite.play("run_and_shoot")
+			can_shoot = false
+
+
+func update_states():
+	if state == playerState.SHOOT or state == playerState.RUN_AND_SHOOT:
+		return
+		
+	#if velocity == Vector2.ZERO and animated_sprite.animation != "shoot":
+		#change_state(playerState.IDLE)
+	#
+	#if velocity.length() > 0 and animated_sprite.animation != "shoot":
+		#change_state(playerState.RUN)
+	
+	if Input.is_action_just_pressed("shoot") and can_shoot:
+		if velocity.length() > 0:
+			change_state(playerState.RUN_AND_SHOOT)
+		else:
+			change_state(playerState.SHOOT)
+		return
+	
+	if velocity == Vector2.ZERO:
+		change_state(playerState.IDLE)
+	else:
+		change_state(playerState.RUN)
+			
+
+func movement():
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	velocity = input_dir * speed
+	if input_dir.x != 0:
+		animated_sprite.flip_h = input_dir.x < 0
 
-func _draw() -> void:
-	var local_start = to_local(position_start)
-	draw_dashed_line(local_start, local_start + launch_vector, Color.GREEN, 2)
 
-func _reset():
-	position_start = Vector2.ZERO
-	position_end = Vector2.ZERO
-	launch_vector = Vector2.ZERO
-	queue_redraw()
-
-func _input(event: InputEvent) -> void:
-
-	if touch_down and event is InputEventMouseMotion:
-		
-		position_end = event.global_position
-		launch_vector = (position_end - position_start).limit_length(max_length)
-		queue_redraw()
-		$muzzle.global_position = position_start
-		
-		
-	if event.is_action_released("touch"):
-		touch_down = false
-		if launch_vector.length() > 5:
-			shoot(launch_vector)
-		_reset()
-
+@warning_ignore("unused_parameter")
 func _physics_process(delta: float) -> void:
-	get_input()
+	movement()
 	move_and_slide()
-	if Input.is_action_pressed("touch"):
-		touch_down = true
-		position_start = global_position
+	update_states()
+	
 
-func shoot(vector: Vector2):
+func spawn_arrow(vector: Vector2):
 	var p = projectile.instantiate()
 	get_parent().add_child(p)
 	p.global_position = $muzzle.global_position
-	p.direction = launch_vector.normalized()
+	p.direction = Vector2.RIGHT
 	p.speed = vector.length() * 8
 	if vector.length() < 100:
 		p.speed = vector.length() * 8
 	print(p.speed)
+
+
+func _on_animated_sprite_2d_animation_finished() -> void:
+	if animated_sprite.animation == "shoot" or animated_sprite.animation == "run_and_shoot":
+		can_shoot = true
+		if velocity.length() > 0:
+			change_state(playerState.RUN)
+		else:
+			change_state(playerState.IDLE)
