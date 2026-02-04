@@ -4,7 +4,7 @@ extends Area2D
 
 @onready var target :Node2D
 @export var speed = 200
-@export var health = 100
+@export var health = 50
 
 func _ready() -> void:
 	health_bar.value = health
@@ -12,7 +12,6 @@ func _ready() -> void:
 func hurt(_damage):
 	health_bar.value = health
 	health -= _damage
-	print("hurt enemy")
 	
 func _physics_process(delta: float) -> void:
 	health_bar.value = health
@@ -27,5 +26,4 @@ func _physics_process(delta: float) -> void:
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("projectile"):
-		hurt(area.damage)
-		area.queue_free()
+		pass

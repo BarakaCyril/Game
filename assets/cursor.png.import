@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://8qfw220hepux"
+path="res://.godot/imported/cursor.png-224f93d013e0812359a323dac1948615.image"
+
+[deps]
+
+source_file="res://assets/cursor.png"
+dest_files=["res://.godot/imported/cursor.png-224f93d013e0812359a323dac1948615.image"]
+
+[params]
+

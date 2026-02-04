@@ -200,7 +200,7 @@ ProgressBar/styles/fill = SubResource("StyleBoxFlat_5ie7m")
 [node name="enemy" type="Area2D"]
 script = ExtResource("1_5ie7m")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["enemy"]]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_lsnsy")
 animation = &"walk"
@@ -209,7 +209,7 @@ animation = &"walk"
 position = Vector2(-9, 11)
 shape = SubResource("CircleShape2D_thsr5")
 
-[node name="health_bar" type="ProgressBar" parent="." groups=["Enemies"]]
+[node name="health_bar" type="ProgressBar" parent="." groups=["enemy"]]
 offset_left = -165.0
 offset_top = 83.0
 offset_right = -17.370117

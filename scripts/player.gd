@@ -4,66 +4,44 @@ extends CharacterBody2D
 @export var max_length := 200
 @export var speed = 400
 
-@onready var animated_sprite :AnimatedSprite2D = $AnimatedSprite2D
-@onready var shoot_cooldown :Timer = $shoot_cooldown
+@onready var body_sprite :AnimatedSprite2D = $body
+@onready var hands_sprite :AnimatedSprite2D = $hand_pivot/hands
+@onready var hands_pivot :Node2D = $hand_pivot
+@onready var muzzle :Node2D = $hand_pivot/muzzle
+@onready var cooldown_timer:Timer = $cooldown_timer
 
 var can_shoot = true
+var arrow_spawned = false
+var is_charging = false
 
-enum playerState {
-	IDLE,
-	RUN,
-	SHOOT,
-	RUN_AND_SHOOT
-}
+var charge_power :float = 0.0
+var current_power :float = 0.0
 
-var state = playerState.IDLE
+const MAX_CHARGE_POWER = 1
 
-func change_state(new_state):
-	if state == new_state:
-		return
-	state = new_state
-	
-	match state:
-		playerState.IDLE:
-			animated_sprite.play("idle")
-		playerState.RUN:
-			animated_sprite.play("run")
-		playerState.SHOOT:
-			animated_sprite.play("shoot")
-			can_shoot = false
-		playerState.RUN_AND_SHOOT:
-			animated_sprite.play("run_and_shoot")
-			can_shoot = false
-
+func spawn_arrosw():
+	var arrow = projectile.instantiate()
+	get_parent().add_child(arrow)
+	var direction = (get_global_mouse_position() - global_position).normalized()
+	arrow.global_position = muzzle.global_position
+	arrow.global_rotation = muzzle.global_rotation
+	arrow.velocity = direction
 
 func update_states():
-	if state == playerState.SHOOT or state == playerState.RUN_AND_SHOOT:
-		return
-		
-	#if velocity == Vector2.ZERO and animated_sprite.animation != "shoot":
-		#change_state(playerState.IDLE)
-	#
-	#if velocity.length() > 0 and animated_sprite.animation != "shoot":
-		#change_state(playerState.RUN)
-	
-	if Input.is_action_just_pressed("shoot") and can_shoot:
-		if velocity.length() > 0:
-			change_state(playerState.RUN_AND_SHOOT)
-		else:
-			change_state(playerState.SHOOT)
-		return
-	
 	if velocity == Vector2.ZERO:
-		change_state(playerState.IDLE)
+		body_sprite.play("idle")
 	else:
-		change_state(playerState.RUN)
-			
+		body_sprite.play("run")
 
 func movement():
+	var mouse_pos = get_global_mouse_position()
+	hands_pivot.look_at(mouse_pos)
+	if mouse_pos.x < global_position.x:
+		body_sprite.flip_h  = true
+	else:
+		body_sprite.flip_h  = false
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	velocity = input_dir * speed
-	if input_dir.x != 0:
-		animated_sprite.flip_h = input_dir.x < 0
 
 
 @warning_ignore("unused_parameter")
@@ -72,22 +50,50 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	update_states()
 	
+	if Input.is_action_pressed("shoot") and can_shoot:
+		is_charging = true
+		charge_power += delta
+		charge_power = min(charge_power, MAX_CHARGE_POWER)
+		
+		hands_sprite.play("hands_shoot", 2.0)
+		#var charge_frame = int((charge_power / MAX_CHARGE_POWER) * 11)
+		if hands_sprite.frame >= 11 and hands_sprite.is_playing():
+			hands_sprite.frame = 11
+			hands_sprite.pause()
+			
+		
+	if Input.is_action_just_released("shoot") and is_charging:
+		fire_arrow()
+		reset_charge()
 
-func spawn_arrow(vector: Vector2):
-	var p = projectile.instantiate()
-	get_parent().add_child(p)
-	p.global_position = $muzzle.global_position
-	p.direction = Vector2.RIGHT
-	p.speed = vector.length() * 8
-	if vector.length() < 100:
-		p.speed = vector.length() * 8
-	print(p.speed)
+func fire_arrow():
+	var arrow = projectile.instantiate()
+	get_parent().add_child(arrow)
+	var direction = (get_global_mouse_position() - global_position).normalized()
+	var ratio = charge_power/MAX_CHARGE_POWER
+	var arrow_speed = lerp(250, 1400, ratio)
+	arrow.global_position = muzzle.global_position
+	arrow.velocity = direction
+	arrow.speed = arrow_speed
+	arrow.global_rotation = muzzle.global_rotation
+	hands_sprite.frame = 11
+	hands_sprite.play()
+	can_shoot = false
+	cooldown_timer.start()
 
+func reset_charge():
+	is_charging = false
+	charge_power = 0.0
 
-func _on_animated_sprite_2d_animation_finished() -> void:
-	if animated_sprite.animation == "shoot" or animated_sprite.animation == "run_and_shoot":
-		can_shoot = true
-		if velocity.length() > 0:
-			change_state(playerState.RUN)
-		else:
-			change_state(playerState.IDLE)
+func _on_hands_animation_finished() -> void:
+	if hands_sprite.animation == "hands_shoot":
+		arrow_spawned = false
+		charge_power = 0.0
+		hands_sprite.play("hands_idle")
+
+func _on_hands_frame_changed() -> void:
+	if hands_sprite.animation == "hands_shoot" and hands_sprite.frame == 12 and not arrow_spawned:
+		arrow_spawned = true
+
+func _on_cooldown_timer_timeout() -> void:
+	can_shoot = true
