@@ -5,6 +5,8 @@ extends Node2D
 @onready var spawn_location :PathFollow2D = $spawn_path/spawn_location
 @onready var charge_bar = $CanvasLayer/Control/charge_bar
 
+var can_spawn = false
+
 var cursor = load("res://assets/cursor.png")
 
 func _ready() -> void:
@@ -25,4 +27,5 @@ func _process(delta: float) -> void:
 	
 
 func _on_spawn_timer_timeout() -> void:
-	spawn_enemy()
+	if can_spawn:
+		spawn_enemy()

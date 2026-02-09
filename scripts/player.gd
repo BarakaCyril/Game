@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var projectile:PackedScene
 @export var max_length := 200
 @export var speed = 400
+@export var power :float = 2.0
 
 @onready var body_sprite :AnimatedSprite2D = $body
 @onready var hands_sprite :AnimatedSprite2D = $hand_pivot/hands
@@ -52,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_pressed("shoot") and can_shoot:
 		is_charging = true
-		charge_power += delta
+		charge_power += delta * power
 		charge_power = min(charge_power, MAX_CHARGE_POWER)
 		
 		hands_sprite.play("hands_shoot", 2.0)
@@ -72,6 +73,8 @@ func fire_arrow():
 	var direction = (get_global_mouse_position() - global_position).normalized()
 	var ratio = charge_power/MAX_CHARGE_POWER
 	var arrow_speed = lerp(250, 1400, ratio)
+	if ratio >= 0.7:
+		arrow.penetration_power = 3
 	arrow.global_position = muzzle.global_position
 	arrow.velocity = direction
 	arrow.speed = arrow_speed

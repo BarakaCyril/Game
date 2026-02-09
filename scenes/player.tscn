@@ -319,14 +319,13 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_i4ail"]
 radius = 30.0
-height = 138.0
+height = 160.0
 
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_g2els")
 projectile = ExtResource("2_qhqgy")
 
 [node name="body" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_cs1tg")
 animation = &"idle"
 
@@ -336,7 +335,6 @@ scale = Vector2(0.99999994, 0.99999994)
 
 [node name="hands" type="AnimatedSprite2D" parent="hand_pivot"]
 position = Vector2(0.99999976, -4.999999)
-scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_wqna8")
 animation = &"hands_shoot"
 
@@ -349,6 +347,10 @@ shape = SubResource("CapsuleShape2D_i4ail")
 [node name="cooldown_timer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+position_smoothing_enabled = true
 
 [connection signal="animation_finished" from="hand_pivot/hands" to="." method="_on_hands_animation_finished"]
 [connection signal="frame_changed" from="hand_pivot/hands" to="." method="_on_hands_frame_changed"]

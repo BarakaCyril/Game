@@ -1,5 +1,5 @@
 extends Area2D
-
+class_name BaseArrow
 
 var velocity = Vector2()
 var speed = 0
