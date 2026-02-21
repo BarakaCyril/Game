@@ -1,10 +1,11 @@
 extends Area2D
 
 @onready var health_bar :ProgressBar= $health_bar
+@onready var hurt_sound = $hurt_sound
 
 @onready var target :Node2D
-@export var speed = 200
-@export var health = 50
+@export var speed = 400
+@export var health = 100
 
 func _ready() -> void:
 	health_bar.value = health
@@ -12,6 +13,7 @@ func _ready() -> void:
 func hurt(_damage):
 	health_bar.value = health
 	health -= _damage
+	hurt_sound.play()
 	
 func _physics_process(delta: float) -> void:
 	health_bar.value = health
@@ -22,6 +24,7 @@ func _physics_process(delta: float) -> void:
 			global_position += direction * speed * delta
 			look_at(target.global_position)
 	if health <= 0:
+		GameManager.entity_count -= 1
 		queue_free()
 
 func _on_area_entered(area: Area2D) -> void:

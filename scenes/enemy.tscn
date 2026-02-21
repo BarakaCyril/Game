@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cohiqpndtgam"]
+[gd_scene format=3 uid="uid://cohiqpndtgam"]
 
 [ext_resource type="Script" uid="uid://dtwhgdqkgp8nq" path="res://scripts/enemy.gd" id="1_5ie7m"]
 [ext_resource type="Texture2D" uid="uid://bpnummhv88kc6" path="res://assets/circle.png" id="2_md0e3"]
+[ext_resource type="AudioStream" uid="uid://rcywpl5n0eqm" path="res://sfx/hurt.mp3" id="3_4ra3w"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_thsr5"]
 radius = 49.365982
@@ -12,17 +13,17 @@ bg_color = Color(0.6170807, 0.6310612, 1.92523e-07, 1)
 [sub_resource type="Theme" id="Theme_ya47j"]
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_5ie7m")
 
-[node name="enemy" type="Area2D"]
+[node name="enemy" type="Area2D" unique_id=1467904588]
 script = ExtResource("1_5ie7m")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1654547117]
 scale = Vector2(0.38, 0.38)
 texture = ExtResource("2_md0e3")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1647806455]
 shape = SubResource("CircleShape2D_thsr5")
 
-[node name="health_bar" type="ProgressBar" parent="." groups=["enemy"]]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1132170033 groups=["enemy"]]
 offset_left = -165.0
 offset_top = 83.0
 offset_right = -17.370117
@@ -30,5 +31,8 @@ offset_bottom = 110.0
 rotation = -1.5707964
 theme = SubResource("Theme_ya47j")
 value = 100.0
+
+[node name="hurt_sound" type="AudioStreamPlayer2D" parent="." unique_id=1893670890]
+stream = ExtResource("3_4ra3w")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

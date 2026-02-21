@@ -10,6 +10,9 @@ extends CharacterBody2D
 @onready var hands_pivot :Node2D = $hand_pivot
 @onready var muzzle :Node2D = $hand_pivot/muzzle
 @onready var cooldown_timer:Timer = $cooldown_timer
+@onready var draw_sound :AudioStreamPlayer2D = $draw
+@onready var release_sound :AudioStreamPlayer2D = $release
+
 
 var can_shoot = true
 var arrow_spawned = false
@@ -19,6 +22,8 @@ var charge_power :float = 0.0
 var current_power :float = 0.0
 
 const MAX_CHARGE_POWER = 1
+var audio_pitch
+var thresh_hold = [0.8, 1.2]
 
 func spawn_arrosw():
 	var arrow = projectile.instantiate()
@@ -51,6 +56,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	update_states()
 	
+
+	
 	if Input.is_action_pressed("shoot") and can_shoot:
 		is_charging = true
 		charge_power += delta * power
@@ -72,9 +79,11 @@ func fire_arrow():
 	get_parent().add_child(arrow)
 	var direction = (get_global_mouse_position() - global_position).normalized()
 	var ratio = charge_power/MAX_CHARGE_POWER
-	var arrow_speed = lerp(250, 1400, ratio)
+	var arrow_speed = lerp(1000, 1900, ratio)
+	release_sound.play(.36)
 	if ratio >= 0.7:
 		arrow.penetration_power = 3
+
 	arrow.global_position = muzzle.global_position
 	arrow.velocity = direction
 	arrow.speed = arrow_speed
@@ -83,6 +92,8 @@ func fire_arrow():
 	hands_sprite.play()
 	can_shoot = false
 	cooldown_timer.start()
+	
+	
 
 func reset_charge():
 	is_charging = false

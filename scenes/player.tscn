@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3 uid="uid://be8qbmt0fe144"]
+[gd_scene format=3 uid="uid://be8qbmt0fe144"]
 
 [ext_resource type="Script" uid="uid://c1yqtrcwkfdtp" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="PackedScene" uid="uid://sp56lm7sjeyv" path="res://scenes/arrow.tscn" id="2_qhqgy"]
@@ -48,6 +48,8 @@
 [ext_resource type="Texture2D" uid="uid://cr7n2ccu3a5q4" path="res://assets/character/hands_idle/hands_idle_00004.png" id="74_qe2k6"]
 [ext_resource type="Texture2D" uid="uid://c6mh58utdh3k5" path="res://assets/character/hands_shoot/hands_shoot_00052.png" id="75_4vfid"]
 [ext_resource type="Texture2D" uid="uid://6v6ces3w5e22" path="res://assets/character/hands_idle/hands_idle_00005.png" id="75_edwuo"]
+[ext_resource type="AudioStream" uid="uid://b1neqq70f7dks" path="res://sfx/draw2.mp3" id="75_mwp2n"]
+[ext_resource type="AudioStream" uid="uid://bqrnck3ivda55" path="res://sfx/release.mp3" id="76_0yhus"]
 [ext_resource type="Texture2D" uid="uid://byvcse410xrxb" path="res://assets/character/hands_idle/hands_idle_00006.png" id="76_5eiju"]
 [ext_resource type="Texture2D" uid="uid://cqre1iu53t52r" path="res://assets/character/hands_shoot/hands_shoot_00053.png" id="76_ljgr3"]
 [ext_resource type="Texture2D" uid="uid://ctqavv6mwwwmi" path="res://assets/character/hands_shoot/hands_shoot_00054.png" id="77_fr8ja"]
@@ -321,36 +323,43 @@ animations = [{
 radius = 30.0
 height = 160.0
 
-[node name="player" type="CharacterBody2D"]
+[node name="player" type="CharacterBody2D" unique_id=511595385]
 script = ExtResource("1_g2els")
 projectile = ExtResource("2_qhqgy")
 
-[node name="body" type="AnimatedSprite2D" parent="."]
+[node name="body" type="AnimatedSprite2D" parent="." unique_id=1427755795]
 sprite_frames = SubResource("SpriteFrames_cs1tg")
 animation = &"idle"
 
-[node name="hand_pivot" type="Node2D" parent="."]
+[node name="hand_pivot" type="Node2D" parent="." unique_id=1580528034]
 position = Vector2(0, 7)
 scale = Vector2(0.99999994, 0.99999994)
 
-[node name="hands" type="AnimatedSprite2D" parent="hand_pivot"]
+[node name="hands" type="AnimatedSprite2D" parent="hand_pivot" unique_id=1692484864]
 position = Vector2(0.99999976, -4.999999)
 sprite_frames = SubResource("SpriteFrames_wqna8")
 animation = &"hands_shoot"
 
-[node name="muzzle" type="Node2D" parent="hand_pivot"]
+[node name="muzzle" type="Node2D" parent="hand_pivot" unique_id=1435415410]
 position = Vector2(51, -2)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=431246011]
 shape = SubResource("CapsuleShape2D_i4ail")
 
-[node name="cooldown_timer" type="Timer" parent="."]
+[node name="cooldown_timer" type="Timer" parent="." unique_id=1234385614]
 wait_time = 0.5
 one_shot = true
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=610925236]
 zoom = Vector2(0.5, 0.5)
 position_smoothing_enabled = true
+
+[node name="draw" type="AudioStreamPlayer2D" parent="." unique_id=594675475]
+stream = ExtResource("75_mwp2n")
+
+[node name="release" type="AudioStreamPlayer2D" parent="." unique_id=1235015155]
+stream = ExtResource("76_0yhus")
+volume_db = 12.0
 
 [connection signal="animation_finished" from="hand_pivot/hands" to="." method="_on_hands_animation_finished"]
 [connection signal="frame_changed" from="hand_pivot/hands" to="." method="_on_hands_frame_changed"]

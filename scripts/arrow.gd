@@ -3,7 +3,7 @@ class_name BaseArrow
 
 var velocity = Vector2()
 var speed = 0
-var damage = 100
+var damage = 50
 var penetration_power = 1
 var is_active = true
 
