@@ -57,7 +57,6 @@ func _physics_process(delta: float) -> void:
 	update_states()
 	
 
-	
 	if Input.is_action_pressed("shoot") and can_shoot:
 		is_charging = true
 		charge_power += delta * power
